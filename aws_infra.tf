@@ -106,6 +106,12 @@ resource "aws_instance" "jenkins-master" {
       "./JenkinsMasterSetup.sh"
     ]
   }
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = tls_private_key.web-key.private_key_pem
+    host        = self.public_ip
+  }
 }
 
 resource "aws_instance" "jenkins-slave" {
@@ -128,6 +134,12 @@ resource "aws_instance" "jenkins-slave" {
       "chmod +x JenkinsSlaveSetup.sh",
       "./JenkinsSlaveSetup.sh"
     ]
+  }
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = tls_private_key.web-key.private_key_pem
+    host        = self.public_ip
   }
 }
 
@@ -152,6 +164,12 @@ resource "aws_instance" "kubernetes-master" {
       "./KubernatesMasterSetup.sh"
     ]
   }
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = tls_private_key.web-key.private_key_pem
+    host        = self.public_ip
+  }
 }
 
 resource "aws_instance" "kubernetes-slave1" {
@@ -175,6 +193,12 @@ resource "aws_instance" "kubernetes-slave1" {
       "./KubernatesSlaveSetup.sh"
     ]
   }
+ connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = tls_private_key.web-key.private_key_pem
+    host        = self.public_ip
+  }
 }
 
 resource "aws_instance" "kubernetes-slave2" {
@@ -197,5 +221,11 @@ resource "aws_instance" "kubernetes-slave2" {
       "chmod +x KubernatesSlaveSetup.sh",
       "./KubernatesSlaveSetup.sh"
     ]
+  }
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = tls_private_key.web-key.private_key_pem
+    host        = self.public_ip
   }
 }
