@@ -108,7 +108,7 @@ resource "aws_instance" "jenkins-master" {
   }
   connection {
     type        = "ssh"
-    user        = "ec2-user"
+    user        = "ubuntu"
     private_key = tls_private_key.web-key.private_key_pem
     host        = self.public_ip
   }
@@ -137,7 +137,7 @@ resource "aws_instance" "jenkins-slave" {
   }
   connection {
     type        = "ssh"
-    user        = "ec2-user"
+    user        = "ubuntu"
     private_key = tls_private_key.web-key.private_key_pem
     host        = self.public_ip
   }
@@ -166,7 +166,7 @@ resource "aws_instance" "kubernetes-master" {
   }
   connection {
     type        = "ssh"
-    user        = "ec2-user"
+    user        = "ubuntu"
     private_key = tls_private_key.web-key.private_key_pem
     host        = self.public_ip
   }
@@ -195,7 +195,7 @@ resource "aws_instance" "kubernetes-slave1" {
   }
  connection {
     type        = "ssh"
-    user        = "ec2-user"
+    user        = "ubuntu"
     private_key = tls_private_key.web-key.private_key_pem
     host        = self.public_ip
   }
@@ -224,7 +224,7 @@ resource "aws_instance" "kubernetes-slave2" {
   }
   connection {
     type        = "ssh"
-    user        = "ec2-user"
+    user        = "ubuntu"
     private_key = tls_private_key.web-key.private_key_pem
     host        = self.public_ip
   }
