@@ -61,6 +61,7 @@ resource "aws_instance" "jenkins-master" {
       "./JenkinsMasterSetup.sh"
     ]
   }
+ depends_on = [aws_security_group.project-securitygroup]
 }
 
 resource "aws_instance" "jenkins-slave" {
@@ -83,6 +84,7 @@ resource "aws_instance" "jenkins-slave" {
       "./JenkinsSlaveSetup.sh"
     ]
   }
+ depends_on = [aws_security_group.project-securitygroup]
 }
 
 resource "aws_instance" "kubernetes-master" {
@@ -105,6 +107,7 @@ resource "aws_instance" "kubernetes-master" {
       "./KubernatesMasterSetup.sh"
     ]
   }
+ depends_on = [aws_security_group.project-securitygroup]
 }
 
 resource "aws_instance" "kubernetes-slave1" {
@@ -127,6 +130,7 @@ resource "aws_instance" "kubernetes-slave1" {
       "./KubernatesSlaveSetup.sh"
     ]
   }
+ depends_on = [aws_security_group.project-securitygroup]
 }
 
 resource "aws_instance" "kubernetes-slave2" {
@@ -149,4 +153,5 @@ resource "aws_instance" "kubernetes-slave2" {
       "./KubernatesSlaveSetup.sh"
     ]
   }
+ depends_on = [aws_security_group.project-securitygroup]
 }
