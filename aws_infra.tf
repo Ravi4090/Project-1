@@ -1,12 +1,12 @@
 provider "aws" {
   region = "us-east-1"
-  shared_credentials_file = "~/.aws/credentials"
+  shared_credentials_files = ["~/.aws/credentials"]
 }
 
 resource "aws_security_group" "project-securitygroup" {
   name        = "project-securitygroup"
   description = "Allow all inbound and outbound traffic"
-  vpc_id      = aws_vpc.default.id  # Using default VPC
+  
 
   ingress {
     from_port   = 0
