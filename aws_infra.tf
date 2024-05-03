@@ -1,12 +1,56 @@
+# vim aws_infra.tf
+
 provider "aws" {
   region = "us-east-1"
-  shared_credentials_files = ["~/.aws/credentials"]
+}
+
+resource "aws_vpc" "sl-vpc" {
+  cidr_block = "10.0.0.0/16"
+  tags = {
+    Name = "sl-vpc"
+  }
+}
+
+resource "aws_subnet" "subnet-1" {
+  vpc_id     = aws_vpc.sl-vpc.id
+  cidr_block = "10.0.1.0/24"
+  map_public_ip_on_launch = true
+  depends_on = [aws_vpc.sl-vpc]
+  tags = {
+    Name = "sl-subnet"
+  }
+}
+
+resource "aws_route_table" "sl-route-table" {
+  vpc_id = aws_vpc.sl-vpc.id
+  tags = {
+    Name = "sl-route-table"
+  }
+}
+
+resource "aws_route_table_association" "a" {
+  subnet_id      = aws_subnet.subnet-1.id
+  route_table_id = aws_route_table.sl-route-table.id
+}
+
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.sl-vpc.id
+  depends_on = [aws_vpc.sl-vpc]
+  tags = {
+    Name = "sl-gw"
+  }
+}
+
+resource "aws_route" "sl-route" {
+  route_table_id         = aws_route_table.sl-route-table.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.gw.id
 }
 
 resource "aws_security_group" "project-securitygroup" {
   name        = "project-securitygroup"
   description = "Allow all inbound and outbound traffic"
-  
+  vpc_id      = aws_vpc.sl-vpc.id
 
   ingress {
     from_port   = 0
@@ -44,6 +88,7 @@ resource "local_file" "web-key" {
 resource "aws_instance" "jenkins-master" {
   ami             = "ami-04b70fa74e45c3917"
   instance_type   = "t2.micro"
+  subnet_id       = aws_subnet.subnet-1.id
   key_name        = "web-key"
   security_groups = [aws_security_group.project-securitygroup.id]
   tags = {
@@ -61,12 +106,12 @@ resource "aws_instance" "jenkins-master" {
       "./JenkinsMasterSetup.sh"
     ]
   }
- depends_on = [aws_security_group.project-securitygroup]
 }
 
 resource "aws_instance" "jenkins-slave" {
   ami             = "ami-04b70fa74e45c3917"
   instance_type   = "t2.micro"
+  subnet_id       = aws_subnet.subnet-1.id
   key_name        = "web-key"
   security_groups = [aws_security_group.project-securitygroup.id]
   tags = {
@@ -84,12 +129,12 @@ resource "aws_instance" "jenkins-slave" {
       "./JenkinsSlaveSetup.sh"
     ]
   }
- depends_on = [aws_security_group.project-securitygroup]
 }
 
 resource "aws_instance" "kubernetes-master" {
   ami             = "ami-04b70fa74e45c3917"
   instance_type   = "t2.micro"
+  subnet_id       = aws_subnet.subnet-1.id
   key_name        = "web-key"
   security_groups = [aws_security_group.project-securitygroup.id]
   tags = {
@@ -107,12 +152,12 @@ resource "aws_instance" "kubernetes-master" {
       "./KubernatesMasterSetup.sh"
     ]
   }
- depends_on = [aws_security_group.project-securitygroup]
 }
 
 resource "aws_instance" "kubernetes-slave1" {
   ami             = "ami-04b70fa74e45c3917"
   instance_type   = "t2.micro"
+  subnet_id       = aws_subnet.subnet-1.id
   key_name        = "web-key"
   security_groups = [aws_security_group.project-securitygroup.id]
   tags = {
@@ -130,12 +175,12 @@ resource "aws_instance" "kubernetes-slave1" {
       "./KubernatesSlaveSetup.sh"
     ]
   }
- depends_on = [aws_security_group.project-securitygroup]
 }
 
 resource "aws_instance" "kubernetes-slave2" {
   ami             = "ami-04b70fa74e45c3917"
   instance_type   = "t2.micro"
+  subnet_id       = aws_subnet.subnet-1.id
   key_name        = "web-key"
   security_groups = [aws_security_group.project-securitygroup.id]
   tags = {
@@ -153,5 +198,4 @@ resource "aws_instance" "kubernetes-slave2" {
       "./KubernatesSlaveSetup.sh"
     ]
   }
- depends_on = [aws_security_group.project-securitygroup]
 }
