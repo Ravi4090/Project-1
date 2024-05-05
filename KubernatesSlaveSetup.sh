@@ -7,7 +7,7 @@ sudo -i <<EOF
 apt update -y
 
 # Set hostname
-hostnamectl set-hostname "kmaster-node"
+hostnamectl set-hostname "kworker-node"
 
 # Disable swap
 swapoff -a
