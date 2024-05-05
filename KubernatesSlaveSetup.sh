@@ -56,6 +56,8 @@ containerd config default | tee /etc/containerd/config.toml
 # Path to the configuration file
 config_file="/etc/containerd/config.toml"
 
+sleep 60
+
 # Check if the file exists
 if [ -f "$config_file" ]; then
     # Use sed to replace the line with SystemdCgroup = false to SystemdCgroup = true
