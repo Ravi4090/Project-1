@@ -1,0 +1,46 @@
+JENKINS SLAVE
+
+
+---
+- name: Setup DevOps environment
+  hosts: webserver
+  become: yes
+  tasks:
+    - name: Install essential tools
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - openjdk-17-jre
+        - git
+        - maven
+
+    - name: Ensure .ssh directory exists for devopsadmin
+      file:
+        path: /home/devopsadmin/.ssh
+        state: directory
+        owner: devopsadmin
+        group: devopsadmin
+        mode: '0700'
+
+    - name: Generate SSH key for devopsadmin
+      become: yes
+      shell: ssh-keygen -t ecdsa -b 521 -N "" -f /home/devopsadmin/.ssh/id_ecdsa
+      args:
+        creates: /home/devopsadmin/.ssh/id_ecdsa
+
+    - name: Append public key to authorized_keys if it exists
+      become: yes
+      shell: 'if [ -f /home/devopsadmin/.ssh/id_ecdsa.pub ]; then cat /home/devopsadmin/.ssh/id_ecdsa.pub >> /home/devopsadmin/.ssh/authorized_keys; fi'
+
+    - name: Set permissions on SSH files
+      become: yes
+      shell: chmod 0600 /home/devopsadmin/.ssh/{{ item }}
+      with_items:
+        - id_ecdsa
+        - id_ecdsa.pub
+        - authorized_keys
+
+    - name: Set permissions on .ssh directory
+      become: yes
+      shell: chmod 0700 /home/devopsadmin/.ssh
