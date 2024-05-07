@@ -17,5 +17,4 @@ sudo useradd -m -s /bin/bash ansiuser
 # Switch to the newly created user and generate SSH key pair
 sudo su - ansiuser -c "
     ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -q -N \"\"
-    cat ~/.ssh/id_rsa.pub
 "
