@@ -1,6 +1,6 @@
 ---
 - name: Setup Kubernetes Master Node
-  hosts: webserver
+  hosts: worker_nodes
   become: yes
   tasks:
     - name: Update package repositories
